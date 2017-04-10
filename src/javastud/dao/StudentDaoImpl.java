@@ -1,7 +1,6 @@
 package javastud.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -10,7 +9,7 @@ import java.util.List;
 
 import javastud.model.Student;
 
-public class StudentDaoImpl implements StudentDao {
+public class StudentDaoImpl extends DB implements StudentDao {
 
 	// INSERT INTO `student` (`name`, `roll_no`, `phone_no`, `gender`, `email`,
 	// `address`, `college_name`) VALUES ('paras', '1', '9841667543', 'MALE',
@@ -19,11 +18,7 @@ public class StudentDaoImpl implements StudentDao {
 	@Override
 	public void saveStudent(Student stud) throws Exception {
 
-		// 1. Load Driver
-		Class.forName("com.mysql.jdbc.Driver");
-
-		// 2. Connection
-		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ncitdb", "root", "");
+		Connection conn = getDBConnection();
 
 		String sql = "INSERT INTO `student` (`name`, `roll_no`, `phone_no`, `gender`, `email`, `address`, `college_name`) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -44,43 +39,32 @@ public class StudentDaoImpl implements StudentDao {
 
 	@Override
 	public List<Student> getAllStudents() throws Exception {
-		
+
 		List<Student> studList = new ArrayList<Student>();
-		
-		// 1. Load Driver
-		Class.forName("com.mysql.jdbc.Driver");
 
-		// 2. Connection
-		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ncitdb", "root", "");
-
+		Connection conn = getDBConnection();
 		Statement stat = conn.createStatement();
-		
+
 		ResultSet rs = stat.executeQuery("SELECT * FROM student");
-		while(rs.next()){
-			//`name`, `roll_no`, `phone_no`, `gender`, `email`, `address`, `college_name`
-			
+		while (rs.next()) {
+			// `name`, `roll_no`, `phone_no`, `gender`, `email`, `address`,
+			// `college_name`
+
 			Student stud = new Student();
-			stud.setId( rs.getLong("id")  ); 
-			stud.setName( rs.getString("name") );
-			stud.setRollNo( rs.getString("roll_no") );
-			stud.setPhoneNo( rs.getString("phone_no") );
+			stud.setId(rs.getLong("id"));
+			stud.setName(rs.getString("name"));
+			stud.setRollNo(rs.getString("roll_no"));
+			stud.setPhoneNo(rs.getString("phone_no"));
 			stud.setGender(rs.getString("gender"));
 			stud.setEmail(rs.getString("email"));
 			stud.setAddress(rs.getString("address"));
 			stud.setCollegeName(rs.getString("college_name"));
-			
+
 			studList.add(stud);
 		}
-		
+
+		conn.close();
 		return studList;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 
 }

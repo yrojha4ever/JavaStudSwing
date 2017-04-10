@@ -11,6 +11,9 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -25,11 +28,7 @@ import javastud.dao.StudentDao;
 import javastud.dao.StudentDaoImpl;
 import javastud.model.Student;
 
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
-public class StudentFormMain extends JFrame {
+public class StudentForm extends JFrame {
 
 	private JPanel contentPane;
 	private JPanel studentPnl;
@@ -64,7 +63,7 @@ public class StudentFormMain extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					StudentFormMain frame = new StudentFormMain();
+					StudentForm frame = new StudentForm();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -76,7 +75,7 @@ public class StudentFormMain extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public StudentFormMain() {
+	public StudentForm() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 604, 443);
 		contentPane = new JPanel();
