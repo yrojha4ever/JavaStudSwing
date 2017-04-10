@@ -14,7 +14,7 @@ public class LogoPanel extends JPanel {
 		try {
 			super.paintComponent(g);
 
-			BufferedImage bImg = ImageIO.read(LogoPanel.class.getResource("/logo.jpg"));
+			BufferedImage bImg = ImageIO.read(LogoPanel.class.getResource("/nepal.png"));
 			g.drawImage(bImg, 0, 0, 195, 100, null);
 
 		} catch (IOException e) {
