@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 import javastud.dao.UserDao;
 import javastud.dao.UserDaoImpl;
+import javax.swing.JPasswordField;
 
 public class LoginFormMain extends JFrame {
 
@@ -26,7 +27,7 @@ public class LoginFormMain extends JFrame {
 	private JLabel userNameLBL;
 	private JTextField usernameTXT;
 	private JLabel passwordLBL;
-	private JTextField passwordTXT;
+	private JPasswordField passwordTXT;
 	private JButton loginBTN;
 	private JButton cancelBTN;
 	
@@ -122,9 +123,9 @@ public class LoginFormMain extends JFrame {
 		}
 		return passwordLBL;
 	}
-	private JTextField getPasswordTXT() {
+	private JPasswordField getPasswordTXT() {
 		if (passwordTXT == null) {
-			passwordTXT = new JTextField();
+			passwordTXT = new JPasswordField();
 			sl_contentPane.putConstraint(SpringLayout.NORTH, passwordTXT, 135, SpringLayout.NORTH, contentPane);
 			sl_contentPane.putConstraint(SpringLayout.SOUTH, getUsernameTXT(), -6, SpringLayout.NORTH, passwordTXT);
 			sl_contentPane.putConstraint(SpringLayout.EAST, getUsernameTXT(), 0, SpringLayout.EAST, passwordTXT);
@@ -145,7 +146,7 @@ public class LoginFormMain extends JFrame {
 			loginBTN.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					UserDao userDao = new UserDaoImpl();
-					boolean isValidUser = userDao.validateUser(usernameTXT.getText(), passwordTXT.getText());
+					boolean isValidUser = userDao.validateUser( usernameTXT.getText(), new String(passwordTXT.getPassword()) );
 					if(isValidUser){
 						StudentForm studForm = new StudentForm();
 						studForm.setVisible(true);
@@ -162,6 +163,12 @@ public class LoginFormMain extends JFrame {
 	private JButton getCancelBTN() {
 		if (cancelBTN == null) {
 			cancelBTN = new JButton("Cancel");
+			cancelBTN.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					frame.dispose();
+					System.exit(0);
+				}
+			});
 			sl_contentPane.putConstraint(SpringLayout.SOUTH, cancelBTN, 25, SpringLayout.NORTH, getLoginBTN());
 			cancelBTN.setFont(new Font("Tahoma", Font.BOLD, 13));
 			sl_contentPane.putConstraint(SpringLayout.NORTH, cancelBTN, 0, SpringLayout.NORTH, getLoginBTN());
