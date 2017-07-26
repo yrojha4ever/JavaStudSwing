@@ -1,24 +1,34 @@
-package javastud;
+package javastud.extend;
 
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import javastud.LogoPanel;
 import javastud.dao.UserDao;
 import javastud.dao.UserDaoImpl;
 import javax.swing.JPasswordField;
 
-public class LoginFormMain extends JFrame {
+public class LoginForm extends JFrame {
 
 	private JPanel contentPane;
 	private JPanel imagePNL;
@@ -30,8 +40,9 @@ public class LoginFormMain extends JFrame {
 	private JPasswordField passwordTXT;
 	private JButton loginBTN;
 	private JButton cancelBTN;
-	
-	private static LoginFormMain frame;
+
+	private static LoginForm frame;
+	private JButton picChooser;
 
 	/**
 	 * Launch the application.
@@ -40,7 +51,7 @@ public class LoginFormMain extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					frame = new LoginFormMain();
+					frame = new LoginForm();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,7 +63,7 @@ public class LoginFormMain extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public LoginFormMain() {
+	public LoginForm() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 443, 282);
 		contentPane = new JPanel();
@@ -69,7 +80,9 @@ public class LoginFormMain extends JFrame {
 		contentPane.add(getPasswordTXT());
 		contentPane.add(getLoginBTN());
 		contentPane.add(getCancelBTN());
+		contentPane.add(getPicChooser());
 	}
+
 	private JPanel getImagePNL() {
 		if (imagePNL == null) {
 			imagePNL = new LogoPanel();
@@ -79,6 +92,7 @@ public class LoginFormMain extends JFrame {
 		}
 		return imagePNL;
 	}
+
 	private JLabel getCompanyName() {
 		if (companyName == null) {
 			companyName = new JLabel("Student Corp., 2017");
@@ -91,6 +105,7 @@ public class LoginFormMain extends JFrame {
 		}
 		return companyName;
 	}
+
 	private JLabel getUserNameLBL() {
 		if (userNameLBL == null) {
 			userNameLBL = new JLabel("User Name:");
@@ -100,6 +115,7 @@ public class LoginFormMain extends JFrame {
 		}
 		return userNameLBL;
 	}
+
 	private JTextField getUsernameTXT() {
 		if (usernameTXT == null) {
 			usernameTXT = new JTextField();
@@ -111,6 +127,7 @@ public class LoginFormMain extends JFrame {
 		}
 		return usernameTXT;
 	}
+
 	private JLabel getPasswordLBL() {
 		if (passwordLBL == null) {
 			passwordLBL = new JLabel("Password:");
@@ -123,6 +140,7 @@ public class LoginFormMain extends JFrame {
 		}
 		return passwordLBL;
 	}
+
 	private JPasswordField getPasswordTXT() {
 		if (passwordTXT == null) {
 			passwordTXT = new JPasswordField();
@@ -135,6 +153,7 @@ public class LoginFormMain extends JFrame {
 		}
 		return passwordTXT;
 	}
+
 	private JButton getLoginBTN() {
 		if (loginBTN == null) {
 			loginBTN = new JButton("Login");
@@ -146,12 +165,13 @@ public class LoginFormMain extends JFrame {
 			loginBTN.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					UserDao userDao = new UserDaoImpl();
-					boolean isValidUser = userDao.validateUser( usernameTXT.getText(), new String(passwordTXT.getPassword()) );
-					if(isValidUser){
-						StudentForm studForm = new StudentForm();
+					boolean isValidUser = userDao.validateUser(usernameTXT.getText(),
+							new String(passwordTXT.getPassword()));
+					if (isValidUser) {
+						StudentFormWithCrud studForm = new StudentFormWithCrud();
 						studForm.setVisible(true);
 						frame.dispose();
-					}else{
+					} else {
 						usernameTXT.setBackground(Color.PINK);
 						passwordTXT.setBackground(Color.PINK);
 					}
@@ -160,6 +180,7 @@ public class LoginFormMain extends JFrame {
 		}
 		return loginBTN;
 	}
+
 	private JButton getCancelBTN() {
 		if (cancelBTN == null) {
 			cancelBTN = new JButton("Cancel");
@@ -176,5 +197,41 @@ public class LoginFormMain extends JFrame {
 			sl_contentPane.putConstraint(SpringLayout.EAST, cancelBTN, -79, SpringLayout.EAST, contentPane);
 		}
 		return cancelBTN;
+	}
+
+	private JButton getPicChooser() {
+		if (picChooser == null) {
+			picChooser = new JButton("Choose Image");
+			sl_contentPane.putConstraint(SpringLayout.NORTH, picChooser, 1, SpringLayout.SOUTH, getCompanyName());
+			sl_contentPane.putConstraint(SpringLayout.WEST, picChooser, 20, SpringLayout.WEST, getCompanyName());
+			sl_contentPane.putConstraint(SpringLayout.SOUTH, picChooser, -11, SpringLayout.NORTH, getUserNameLBL());
+			sl_contentPane.putConstraint(SpringLayout.EAST, picChooser, -19, SpringLayout.WEST, getImagePNL());
+			picChooser.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						JFileChooser fc = new JFileChooser();
+						fc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg"));
+
+						int result = fc.showOpenDialog(contentPane);
+						if (result == JFileChooser.APPROVE_OPTION) {
+							File path = fc.getSelectedFile();
+
+							JLabel imageLbl = new JLabel();
+							imageLbl.setIcon(new ImageIcon(new ImageIcon(ImageIO.read(path)).getImage()
+									.getScaledInstance(200, 100, Image.SCALE_DEFAULT)));
+							imagePNL.add(imageLbl);
+							imagePNL.revalidate();
+							imagePNL.repaint();
+						}
+
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+
+				}
+			});
+		}
+		return picChooser;
 	}
 }

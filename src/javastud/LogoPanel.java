@@ -7,6 +7,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+//IMP: project>new> Source Folder> resources folder for images
+//Eclipse does not create resource folder in class path it paste directly
+//in main path, so dont use resources folder, give name directly liek "/nepal.png"
 public class LogoPanel extends JPanel {
 
 	@Override
@@ -14,7 +17,7 @@ public class LogoPanel extends JPanel {
 		try {
 			super.paintComponent(g);
 
-			BufferedImage bImg = ImageIO.read(LogoPanel.class.getResource("/nepal.png"));
+			BufferedImage bImg = ImageIO.read(LogoPanel.class.getResource("/student_login.png"));
 			g.drawImage(bImg, 0, 0, 195, 100, null);
 
 		} catch (IOException e) {
